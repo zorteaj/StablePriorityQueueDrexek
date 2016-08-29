@@ -1,17 +1,45 @@
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.Queue;
+import java.time.*;
 
 /**
  * Created by JZ_W541 on 8/22/2016.
  */
 public class StablePriorityQueue {
 
-    //private Node root;
-    private ArrayList<Integer> myList = new ArrayList<>(); //TODO: Make Generic Type
+    public StablePriorityQueue() {}
 
-    public StablePriorityQueue() {
+    private class QueueElement {
+        public QueueElement(int data) {
+            myData = data;
+            myTime = Instant.now();
+        }
+        private int myData;
+        private Instant myTime;
+        public int getData() {
+            return myData;
+        }
+        public Instant getTime() {
+            return myTime;
+        }
 
+        // Returns negative value if this data is less, positive if this data is greater
+        // If data is equal, returns negative value if this time is less, positive if this time greater
+        public int compareTo(QueueElement e) {
+            if(this.myData < e.getData()) {
+                return -1;
+            } else if(this.myData > e.getData()) {
+                return 1;
+            } else {
+                return this.myTime.compareTo(e.getTime());
+            }
+        }
     }
+
+    //private Node root;
+    private ArrayList<QueueElement> myList = new ArrayList<>();
 
     public boolean isEmpty() {
         if(myList.isEmpty()) {
@@ -22,13 +50,13 @@ public class StablePriorityQueue {
     }
 
 
-    public int maximum() throws IndexOutOfBoundsException { // TODO: Exception
-        return myList.get(0);
+    public int maximum() throws IndexOutOfBoundsException {
+        return myList.get(0).getData();
     }
 
-    public int extractMax() throws IndexOutOfBoundsException { // TODO: Exception
+    public int extractMax() throws IndexOutOfBoundsException {
         int max = maximum();
-        int last = myList.remove(myList.size() - 1);
+        QueueElement last = myList.remove(myList.size() - 1);
         if(myList.size() > 0) {
             myList.set(0, last);
             extractSort(0);
@@ -50,12 +78,12 @@ public class StablePriorityQueue {
             greatestChildIndex = leftIndex;
         // If neither child is empty, compare for greatest
         } else {
-            greatestChildIndex = myList.get(leftIndex) > myList.get(rightIndex) ? leftIndex : rightIndex;
+            greatestChildIndex = myList.get(leftIndex).getData() > myList.get(rightIndex).getData() ? leftIndex : rightIndex;
         }
 
         // If greatest child is greater than parent, promote greatest child
         // and recursively extract sort
-        if(myList.get(greatestChildIndex) > myList.get(index)) {
+        if(myList.get(greatestChildIndex).getData() > myList.get(index).getData()) {
             promote(greatestChildIndex);
             extractSort(greatestChildIndex);
         } else {
@@ -64,14 +92,15 @@ public class StablePriorityQueue {
     }
 
     public void insert(Integer data) {
-        myList.add(data);
+        QueueElement e = new QueueElement(data);
+        myList.add(e);
         insertSort(myList.size() - 1);
     }
 
     private void insertSort(int index) {
         if (myList.size() <= 1) {
             return;
-        } else if (myList.get(index) > myList.get(parentIndex(index))) {
+        } else if (myList.get(index).getData() > myList.get(parentIndex(index)).getData()) {
             promote(index);
             insertSort(parentIndex(index));
         } else {
@@ -83,7 +112,7 @@ public class StablePriorityQueue {
     private void promote(int index)
     {
         int parentIndex = parentIndex(index);
-        int temp = myList.get(index);
+        QueueElement temp = myList.get(index);
         myList.set(index, myList.get(parentIndex));
         myList.set(parentIndex, temp);
     }

@@ -14,7 +14,7 @@ public class Main {
         }
 
        while(!q.isEmpty()) {
-           System.out.println(q.maximum());
+           //System.out.println(q.maximum());
            System.out.println(q.extractMax());
        }
     }
