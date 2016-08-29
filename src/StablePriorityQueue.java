@@ -1,26 +1,32 @@
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.Queue;
 import java.time.*;
 
 /**
  * Created by JZ_W541 on 8/22/2016.
  */
-public class StablePriorityQueue {
+public class StablePriorityQueue<T extends Comparable<? super T>> {
 
-    public StablePriorityQueue() {}
+    public StablePriorityQueue() {
+        System.out.println(Instant.now());
+        System.out.println(Instant.now());
+        System.out.println(Instant.now().toEpochMilli());
+        System.out.println(Instant.now().toEpochMilli());
+    }
 
-    private class QueueElement {
-        public QueueElement(int data) {
+    private class QueueElement{
+
+        private T myData;
+        private Instant myTime;
+
+        public QueueElement(T data) {
             myData = data;
             myTime = Instant.now();
         }
-        private int myData;
-        private Instant myTime;
-        public int getData() {
+
+        public T getData() {
             return myData;
         }
+
         public Instant getTime() {
             return myTime;
         }
@@ -28,9 +34,9 @@ public class StablePriorityQueue {
         // Returns negative value if this data is less, positive if this data is greater
         // If data is equal, returns negative value if this time is less, positive if this time greater
         public int compareTo(QueueElement e) {
-            if(this.myData < e.getData()) {
+            if(this.myData.compareTo(e.getData()) < 0) {
                 return -1;
-            } else if(this.myData > e.getData()) {
+            } else if(this.myData.compareTo(e.getData()) > 0) {
                 return 1;
             } else {
                 return this.myTime.compareTo(e.getTime());
@@ -38,7 +44,6 @@ public class StablePriorityQueue {
         }
     }
 
-    //private Node root;
     private ArrayList<QueueElement> myList = new ArrayList<>();
 
     public boolean isEmpty() {
@@ -49,13 +54,12 @@ public class StablePriorityQueue {
         }
     }
 
-
-    public int maximum() throws IndexOutOfBoundsException {
+    public T maximum() throws IndexOutOfBoundsException {
         return myList.get(0).getData();
     }
 
-    public int extractMax() throws IndexOutOfBoundsException {
-        int max = maximum();
+    public T extractMax() throws IndexOutOfBoundsException {
+        T max = maximum();
         QueueElement last = myList.remove(myList.size() - 1);
         if(myList.size() > 0) {
             myList.set(0, last);
@@ -91,7 +95,7 @@ public class StablePriorityQueue {
         }
     }
 
-    public void insert(Integer data) {
+    public void insert(T data) {
         QueueElement e = new QueueElement(data);
         myList.add(e);
         insertSort(myList.size() - 1);

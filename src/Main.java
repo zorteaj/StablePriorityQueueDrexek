@@ -5,17 +5,39 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Hello");
-        StablePriorityQueue q = new StablePriorityQueue();
+        StablePriorityQueue<Struct> q = new StablePriorityQueue();
 
-        int[] nums = {4, 6, 2, 1, 8, 2, 3, 8, 5, 7};
+        /*
+        Struct[] nums = {
+                new Struct(4, 1),
+                new Struct(6, 1),
+                new Struct(8, 1),
+                new Struct(2, 1),
+                new Struct(1, 1),
+                new Struct(9, 1),
+                new Struct(4, 2)
+        };
+    */
+
+        Struct[] nums = {
+                new Struct(4, 1),
+                new Struct(6, 1),
+                new Struct(4, 2)
+        };
 
         for(int i = 0 ; i < nums.length ; i++) {
             q.insert(nums[i]);
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+
+            }
         }
 
        while(!q.isEmpty()) {
            //System.out.println(q.maximum());
-           System.out.println(q.extractMax());
+           Struct max = q.extractMax();
+           System.out.println(max.data + " : " + max.priority);
        }
     }
 
