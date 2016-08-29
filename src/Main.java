@@ -7,7 +7,7 @@ public class Main {
         System.out.println("Hello");
         StablePriorityQueue q = new StablePriorityQueue();
 
-        int[] nums = {4, 6, 1, 8, 2, 3, 5, 7};
+        int[] nums = {4, 6, 2, 1, 8, 2, 3, 8, 5, 7};
 
         for(int i = 0 ; i < nums.length ; i++) {
             q.insert(nums[i]);

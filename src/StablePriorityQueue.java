@@ -78,12 +78,12 @@ public class StablePriorityQueue {
             greatestChildIndex = leftIndex;
         // If neither child is empty, compare for greatest
         } else {
-            greatestChildIndex = myList.get(leftIndex).getData() > myList.get(rightIndex).getData() ? leftIndex : rightIndex;
+            greatestChildIndex = myList.get(leftIndex).compareTo(myList.get(rightIndex)) > 0 ? leftIndex : rightIndex;
         }
 
         // If greatest child is greater than parent, promote greatest child
         // and recursively extract sort
-        if(myList.get(greatestChildIndex).getData() > myList.get(index).getData()) {
+        if(myList.get(greatestChildIndex).compareTo(myList.get(index)) > 0 ) {
             promote(greatestChildIndex);
             extractSort(greatestChildIndex);
         } else {
@@ -100,7 +100,7 @@ public class StablePriorityQueue {
     private void insertSort(int index) {
         if (myList.size() <= 1) {
             return;
-        } else if (myList.get(index).getData() > myList.get(parentIndex(index)).getData()) {
+        } else if (myList.get(index).compareTo(myList.get(parentIndex(index))) > 0) {
             promote(index);
             insertSort(parentIndex(index));
         } else {
