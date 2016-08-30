@@ -7,10 +7,6 @@ import java.time.*;
 public class StablePriorityQueue<T extends Comparable<? super T>> {
 
     public StablePriorityQueue() {
-        System.out.println(Instant.now());
-        System.out.println(Instant.now());
-        System.out.println(Instant.now().toEpochMilli());
-        System.out.println(Instant.now().toEpochMilli());
     }
 
     private class QueueElement{
@@ -39,7 +35,7 @@ public class StablePriorityQueue<T extends Comparable<? super T>> {
             } else if(this.myData.compareTo(e.getData()) > 0) {
                 return 1;
             } else {
-                return this.myTime.compareTo(e.getTime());
+                return -1 * this.myTime.compareTo(e.getTime());
             }
         }
     }
@@ -95,9 +91,22 @@ public class StablePriorityQueue<T extends Comparable<? super T>> {
         }
     }
 
-    public void insert(T data) {
-        QueueElement e = new QueueElement(data);
-        myList.add(e);
+    // Synchronized so that even if different threads try to
+    // insert at the same time (which could cause elements with
+    // the same timestamp, invalidating our "stability" framework), they
+    // will not be able to (assuming I understand synchronization
+    // and the Thread.sleep function)
+    public synchronized void insert(T data) {
+        QueueElement elem = new QueueElement(data);
+        // Pause thread for one nanosecond so that no two
+        // elements may be created with the same time
+        // (This is probably not the most elegant solution)
+        try {
+            Thread.sleep(0, 1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        myList.add(elem);
         insertSort(myList.size() - 1);
     }
 
