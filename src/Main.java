@@ -17,7 +17,7 @@ public class Main {
                 new Struct(9, 1),
                 new Struct(4, 2)
         };
-    */
+*/
 
         Struct[] nums = {
                 new Struct(4, 1),
@@ -36,6 +36,7 @@ public class Main {
                 new Struct(4, 5),
                 new Struct(4, 6)
         };
+
 
         for(int i = 0 ; i < nums.length ; i++) {
             q.insert(nums[i]);

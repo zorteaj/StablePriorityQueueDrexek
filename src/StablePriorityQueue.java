@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.time.*;
 
 /**
  * Created by JZ_W541 on 8/22/2016.
@@ -9,22 +8,23 @@ public class StablePriorityQueue<T extends Comparable<? super T>> {
     public StablePriorityQueue() {
     }
 
-    private class QueueElement{
+    private class QueueElement {
 
         private T myData;
-        private Instant myTime;
+        private int myOrder;
 
         public QueueElement(T data) {
             myData = data;
-            myTime = Instant.now();
+            myOrder = ++count;
         }
 
         public T getData() {
             return myData;
         }
 
-        public Instant getTime() {
-            return myTime;
+
+        public int getOrder() {
+            return myOrder;
         }
 
         // Returns negative value if this data is less, positive if this data is greater
@@ -35,12 +35,37 @@ public class StablePriorityQueue<T extends Comparable<? super T>> {
             } else if(this.myData.compareTo(e.getData()) > 0) {
                 return 1;
             } else {
-                return -1 * this.myTime.compareTo(e.getTime());
+                if(this.myOrder > e.getOrder()) {
+                    return -1;
+                } else {
+                    return 1;
+                }
             }
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if(!(o instanceof StablePriorityQueue.QueueElement)) {
+                return false;
+            } else {
+                QueueElement elem = (StablePriorityQueue.QueueElement) o;
+                if(this.compareTo(elem) == 0) {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            assert false : "hashCode not designed";
+            return 42; // any arbitrary constant will do
+        }
+
     }
 
     private ArrayList<QueueElement> myList = new ArrayList<>();
+    private static int count = 0;
 
     public boolean isEmpty() {
         if(myList.isEmpty()) {
@@ -91,21 +116,8 @@ public class StablePriorityQueue<T extends Comparable<? super T>> {
         }
     }
 
-    // Synchronized so that even if different threads try to
-    // insert at the same time (which could cause elements with
-    // the same timestamp, invalidating our "stability" framework), they
-    // will not be able to (assuming I understand synchronization
-    // and the Thread.sleep function)
-    public synchronized void insert(T data) {
+    public void insert(T data) {
         QueueElement elem = new QueueElement(data);
-        // Pause thread for one nanosecond so that no two
-        // elements may be created with the same time
-        // (This is probably not the most elegant solution)
-        try {
-            Thread.sleep(0, 1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         myList.add(elem);
         insertSort(myList.size() - 1);
     }
@@ -113,7 +125,7 @@ public class StablePriorityQueue<T extends Comparable<? super T>> {
     private void insertSort(int index) {
         if (myList.size() <= 1) {
             return;
-        } else if (myList.get(index).compareTo(myList.get(parentIndex(index))) > 0) {
+        } else if ((index != 0) && myList.get(index).compareTo(myList.get(parentIndex(index))) > 0) {
             promote(index);
             insertSort(parentIndex(index));
         } else {
@@ -132,7 +144,6 @@ public class StablePriorityQueue<T extends Comparable<? super T>> {
 
     // Get index of parent
     private int parentIndex(int index) {
-        // TODO: Throw divide my 0 exception
         return (index - 1) / 2;
     }
 
